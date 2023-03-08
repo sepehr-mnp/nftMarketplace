@@ -24,4 +24,4 @@
                }
       }
 };
-module.exports = JSON.parse(solc.compile(JSON.stringify(input)))['contracts']['nftMarketplace.sol']['NFTMarketplace'];
+module.exports = JSON.parse(solc.compile(JSON.stringify(input)))['contract']['nftMarketplace.sol']['NFTMarketplace'];
