@@ -24,6 +24,7 @@ contract NFTMarketplace is ERC721URIStorage {
       uint256 tokenId;
       address payable seller;
       address payable owner;
+      address ERC20Address;// address(0) if want native token
       uint256 price;
       bool sold;
     }
@@ -33,6 +34,7 @@ contract NFTMarketplace is ERC721URIStorage {
       uint256 indexed tokenId,
       address seller,
       address owner,
+      address ERC20Address,
       uint256 price,
       bool sold
     );
