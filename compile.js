@@ -12,7 +12,7 @@
  var input = {
     language: 'Solidity',
     sources: {
-             'ERC20.sol': {
+             'nftMarketplace.sol': {
               content: source
    }
 },
