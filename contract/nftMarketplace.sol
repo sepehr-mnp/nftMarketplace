@@ -54,19 +54,19 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
 
-    function createToken(string memory tokenURI, uint256 price) public payable returns (uint) {
+    function createToken(string memory tokenURI,address ERC20Address, uint256 price) public payable returns (uint) {
       _tokenIds.increment();
 
       uint256 newTokenId = _tokenIds.current();
 
       _mint(msg.sender, newTokenId);
       _setTokenURI(newTokenId, tokenURI);
-      createMarketItem(newTokenId, price);
+      createMarketItem(newTokenId,ERC20Address , price);
 
       return newTokenId;
     }
 
-    function createMarketItem(uint256 tokenId, uint256 price) private {
+    function createMarketItem(uint256 tokenId,address ERC20Address  , uint256 price) private {
 
       require(price > 0, "Price must be at least 1 wei");
 
@@ -93,9 +93,12 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
 
-    function resellToken(uint256 tokenId, uint256 price) public payable {
+    
+    function resellToken(uint256 tokenId,address ERC20Address, uint256 price) public payable {
+      // if no address is given, defualt value is address(0)
       require(idToMarketItem[tokenId].owner == msg.sender, "Only item owner can perform this operation");
       require(msg.value == listingPrice, "Price must be equal to listing price");
+      idToMarketItem[tokenId].ERC20Address = ERC20Address;
       idToMarketItem[tokenId].sold = false;
       idToMarketItem[tokenId].price = price;
       idToMarketItem[tokenId].seller = payable(msg.sender);
@@ -194,3 +197,5 @@ contract NFTMarketplace is ERC721URIStorage {
       return items;
     }
 }
+
+
