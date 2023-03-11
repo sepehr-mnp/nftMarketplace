@@ -111,12 +111,13 @@ contract NFTMarketplace is ERC721URIStorage {
       _transfer(msg.sender, address(this), tokenId);
     }
 
-    function createMarketSale(uint256 tokenId,address ERC20Address) public payable {
+    function createMarketSale(uint256 tokenId) public payable {
       uint price = idToMarketItem[tokenId].price;
       address payable creator = idToMarketItem[tokenId].seller;
       idToMarketItem[tokenId].owner = payable(msg.sender);
       idToMarketItem[tokenId].sold = true;
       idToMarketItem[tokenId].seller = payable(address(0));
+ERC20Address = idToMarketItem[tokenId].ERC20Address;
       _itemsSold.increment();
       _transfer(address(this), msg.sender, tokenId);
 
