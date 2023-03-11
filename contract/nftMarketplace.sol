@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "hardhat/console.sol";
 
@@ -77,6 +78,7 @@ contract NFTMarketplace is ERC721URIStorage {
         tokenId,
         payable(msg.sender),
         payable(address(this)),
+        ERC20Address,
         price,
         false
       );
@@ -87,6 +89,7 @@ contract NFTMarketplace is ERC721URIStorage {
         tokenId,
         msg.sender,
         address(this),
+        ERC20Address,
         price,
         false
       );
@@ -108,18 +111,24 @@ contract NFTMarketplace is ERC721URIStorage {
       _transfer(msg.sender, address(this), tokenId);
     }
 
-    function createMarketSale(uint256 tokenId) public payable {
+    function createMarketSale(uint256 tokenId,address ERC20Address) public payable {
       uint price = idToMarketItem[tokenId].price;
       address payable creator = idToMarketItem[tokenId].seller;
-      require(msg.value == price, "Please submit the asking price in order to complete the purchase");
       idToMarketItem[tokenId].owner = payable(msg.sender);
       idToMarketItem[tokenId].sold = true;
       idToMarketItem[tokenId].seller = payable(address(0));
       _itemsSold.increment();
-      
       _transfer(address(this), msg.sender, tokenId);
-      payable(owner).transfer(listingPrice);
-      payable(creator).transfer(msg.value);
+
+      if(ERC20Address == address(0)){
+        require(msg.value == price, "Please submit the asking price in order to complete the purchase");
+        payable(owner).transfer(listingPrice);
+        payable(creator).transfer(msg.value);
+      }else{
+        
+        require(IERC20(ERC20Address).transferFrom(msg.sender, creator, price),"Please approve the asking price in order to complete the purchase");
+        payable(owner).transfer(listingPrice);
+      }
     }
 
 
